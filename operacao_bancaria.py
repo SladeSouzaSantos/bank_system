@@ -1,4 +1,4 @@
-from usuario import Usuario
+from conta_corrente import ContaCorrente
 
 
 class OperacaoBancaria:
@@ -6,13 +6,13 @@ class OperacaoBancaria:
     LIMITE_SAQUE_DIARIO = 3
     LIMITE_VALOR_SAQUE = 500
     
-    def __init__(self, usuario : Usuario):
-        self.usuario = usuario
+    def __init__(self, conta : ContaCorrente):
+        self.conta = conta
 
     def deposito(self, valor):
         if valor > 0:
-            self.usuario.saldo += valor
-            self.usuario.historico_operacao.append(f"Deposito: R$ {valor:0.2f}")
+            self.conta.saldo += valor
+            self.conta.historico_operacao.append(f"Deposito: R$ {valor:0.2f}")
             return True
         
         else:
@@ -21,32 +21,32 @@ class OperacaoBancaria:
             return False
     
     def saque(self, valor):
-        if ((not (0 < valor <= self.LIMITE_VALOR_SAQUE)) or (valor > self.usuario.saldo) or (self.usuario.saques_diarios >= self.LIMITE_SAQUE_DIARIO)):
+        if ((not (0 < valor <= self.LIMITE_VALOR_SAQUE)) or (valor > self.conta.saldo) or (self.conta.saques_diarios >= self.LIMITE_SAQUE_DIARIO)):
                    
             mensagem_error = "\nERROR NA OPERAÇÃO\n"
             
             if (not (0 < valor <= self.LIMITE_VALOR_SAQUE)):
                 mensagem_error += f"# O valor do saque deve ser maior que R$ 0.00 e obedecer o limite máximo de R$ {self.LIMITE_VALOR_SAQUE:0.2f}\n"
 
-            if (valor > self.usuario.saldo):
+            if (valor > self.conta.saldo):
                 mensagem_error += "# Saldo insuficiênte\n"
 
-            if (self.usuario.saques_diarios >= self.LIMITE_SAQUE_DIARIO):
+            if (self.conta.saques_diarios >= self.LIMITE_SAQUE_DIARIO):
                 mensagem_error += "# Limite de saque diário alcançado. Tente realizar novamente amanhão.\n" 
             
             print(f"{mensagem_error}\n")
             return False
         
         else:
-            self.usuario.saldo -= valor
-            self.usuario.saques_diarios += 1
-            self.usuario.historico_operacao.append(f"Saque: R$ {valor:0.2f}")            
+            self.conta.saldo -= valor
+            self.conta.saques_diarios += 1
+            self.conta.historico_operacao.append(f"Saque: R$ {valor:0.2f}")            
             return True
 
     def extrato(self):
         print("\n################# EXTRATO ################\n")
 
-        for operacao in self.usuario.historico_operacao:
+        for operacao in self.conta.historico_operacao:
             print(operacao)
 
-        print(f"\nSALDO: R$ {self.usuario.saldo:0.2f}\n##########################################")
+        print(f"\nSALDO: R$ {self.conta.saldo:0.2f}\n##########################################")
